@@ -10,7 +10,7 @@ body{
 	font-family: "Iceland", serif;
 }
 .container{
-	width:544px;
+	width:448px;
 	margin:0 auto;
 	position:relative;
 }
@@ -18,10 +18,11 @@ body{
 	text-align: center;
 	color:white;
 }
+
 .stage {
 margin:0 auto;
 position: relative;
-width: 544px;
+width: 448px;
 height: 448px;
 background: #000;
 }
@@ -47,7 +48,7 @@ margin:0 auto;
 padding:20px;
 font-size:1.2rem;
 border:3px solid gray;
-width: 544px;
+width: 448px;
 color:white;
 }
 .timer{

@@ -1,4 +1,4 @@
-var count=20;
+var count=15;
 var counter=setInterval(timer, 1000); //1000 will  run it every 1 second
 function timer()
 {
