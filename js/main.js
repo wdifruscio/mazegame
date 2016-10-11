@@ -1,323 +1,125 @@
-//stage and output
-var stage = document.querySelector("#stage");
-var output = document.querySelector("#output");
-//keyinputs
-var UP = 38;
-var DOWN = 40;
-var RIGHT = 39;
-var LEFT = 37;
-//map render (use bg images)
-var map =
-[
-[1,1,1,1,5,1,1,1,1,1,1,1,1,1,1,1,1],
-[1,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,1],
-[1,3,1,1,0,1,0,1,0,1,1,0,1,0,1,0,1],
-[1,0,0,0,1,1,0,1,0,2,1,0,0,0,1,0,1],
-[1,1,1,0,1,0,0,1,1,1,1,1,1,1,1,0,1],
-[1,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,1],
-[1,0,1,0,1,0,1,1,0,0,1,0,0,0,1,0,1],
-[1,0,0,0,1,0,0,1,1,0,1,1,1,1,1,1,1],
-[1,0,0,0,1,1,0,1,0,0,0,0,0,0,0,0,1],
-[1,0,1,1,0,1,0,1,1,1,1,1,1,1,1,0,1],
-[1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1],
-[1,0,1,0,1,1,1,1,1,0,1,1,1,1,1,1,1],
-[1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1],
-[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-];
-//map of game objects (use sprite img)
-var gameObjects =
-[
-[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6,0],
-[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-];
-
-//coordinates for player
-var playerRow;
-var playerColumn;
-
-//map coordinates
-var ROWS = map.length; 
-var COLUMNS = map[0].length;
-
-//tiles
-var FLOOR = 0;
-var WALL = 1;
-var KEY = 2;
-var LOCK = 3;
-var ENTER = 4;
-var EXIT =5;
-var PLAYER = 6;
-
-//size of CELL
-var SIZE =32;
-
-// game variables
-var gameMessage = "Use the arrow keys to find the exit.";
-var keyFound = false;
-var lockedBlockOne = true;
-var timerUp = false;
-var gameOver = false;
-var currentLevel = 1;
-
-//level object (want to write an object to store level data dynamically? .. :S)
+//vars to determine level and state of game
+currentLevel = 0;
+gameFinished = false;
+gameLost = false;
+gameWon = false;
+//this is to trigger if the enter key can be pressed or not(could exploit levels before)
+enterKeyOn = true;
 
 
-//keydown listener
-window.addEventListener("keydown", keydownHandler, false);
+$(document).ready(function(){
+	levelCheck();
+});
+//start game with level check function
 
-//get position -- loop through the arrays to find position and make it equal to row/column
-for (var row = 0; row < ROWS; row++) {
-	for (var column = 0; column < COLUMNS; column++){
-		if(gameObjects[row][column] === PLAYER){
-			playerRow = row;
-			playerColumn = column;
+//level check function determines which level they are at in the game using counter within levelOne->levelFive functions.
+//If a level is completed, the counter goes up which will trigger the next level.
+function levelCheck(){
+	//if the game isn't finished, determine which level player is on
+	if (!gameFinished){
+		switch (currentLevel){
+			case 0:
+			startGame();
+			break;
+
+			case 1:
+			levelOne();
+			break;
+
+			case 2:
+			levelTwo();
+			break;
+
+			case 3:
+			levelThree();
+			break;
+
+			case 4:
+			levelFour();
+			break;
+
+			case 5:
+			levelFive();
+			break;
+
+			case 6:
+			levelSix();
+			break;
+
+			case 7:
+			levelSeven();
+			break;
+
+			case 8:
+			levelEight();
+			break;
+
+			case 9:
+			levelNine();
+			break;
+		}
+	}
+	//if game is finished, display this output
+	else{
+		//determine if game was lost or won. Either way, game is finished so remove the event handler. 
+		window.removeEventListener("keydown", keydownHandler, false);
+		if (gameLost) {
+			$("#output").css('color','red');
+			$("#output").typed({
+			  strings: ["You lost, try again!"],
+			  typeSpeed: 10,
+			  backDelay:500,
+			  backSpeed: -50
+			});
+		}
+		if(gameWon){
+			$("#output").css('color','green');
+			$("#output").typed({
+			  strings: ["You beat my maze game. Thanks for playing ^^"],
+			  typeSpeed: 10,
+			  backDelay:500,
+			  backSpeed: -50
+			});
 		}
 	}
 }
-//move function
-function keydownHandler(event){
-	function moveUp(){
-		gameObjects[playerRow][playerColumn] = 0;
-		playerRow--;
-		gameObjects[playerRow][playerColumn] = PLAYER;
-	}
-	function moveDown(){
-		gameObjects[playerRow][playerColumn] = 0;
-		playerRow++;
-		gameObjects[playerRow][playerColumn] = PLAYER;
-	}
-	function moveLeft(){
-		gameObjects[playerRow][playerColumn] = 0;
-		playerColumn--;
-		gameObjects[playerRow][playerColumn] = PLAYER;
-	}
-	function moveRight(){
-		gameObjects[playerRow][playerColumn] = 0;
-		playerColumn++;
-		gameObjects[playerRow][playerColumn] = PLAYER;
-	}
-	switch(event.keyCode){
-		case UP:
-		var thingAbove = map[playerRow - 1][playerColumn];
-			switch (thingAbove){
-				case FLOOR:
-				moveUp();
-				break;
-
-				case KEY:
-				moveUp();
-				break;
-
-				case LOCK:
-				if(keyFound == true){
-					moveUp();
-				}
-				break;
-
-				case EXIT:
-				moveUp();
-				break;
-			}
-		break;
-
-		case DOWN:
-		var thingBelow = map[playerRow + 1][playerColumn];
-			switch (thingBelow){
-				case FLOOR:
-				moveDown();
-				break;
-
-				case KEY:
-				moveDown();
-				break;
-
-				case LOCK:
-				if(keyFound == true){
-					moveDown();
-				}
-				break;
-
-				case EXIT:
-				moveDown();
-				break;
-			}
-		break;
-
-		case LEFT:
-		var thingLeft = map[playerRow][playerColumn - 1];
-			switch (thingLeft){
-				case FLOOR:
-				moveLeft();
-				break;
-
-				case KEY:
-				moveLeft();
-				break;
-
-				case LOCK:
-				if(keyFound == true){
-					moveLeft();
-				}
-				break;
-
-				case EXIT:
-				moveLeft();
-				break;
-			}
-		break;
-
-		case RIGHT:
-		var thingRight = map[playerRow][playerColumn + 1]
-			switch (thingRight){
-				case FLOOR:
-				moveRight();
-				break;
-
-				case KEY:
-				moveRight();
-				break;
-
-				case LOCK:
-				if(keyFound == true){
-					moveRight();
-				}
-				break;
-
-				case EXIT:
-				moveRight();
-				break;
-			}
-		break;
-	}
-	//switch statement for finding stuff
-		switch(map[playerRow][playerColumn]){
-			case EXIT:
-			endGame();
-			break;
-		
-			case KEY:
-			console.log("gotkey");
-			getKey();
-			break;
-
-			case LOCK:
-			console.log("unlock");
-			unlock();
-			break;
-
-			case FLOOR:
-			output.style.color = "white";
-			gameMessage = "Use the arrow keys to find the exit.";
-			break;
-		}
-	render();
+//start game is level 0. 
+function startGame(){
+      $("#output").typed({
+        strings: ["Use the arrow keys to try and get to the end of the maze. Watch the time limit!", "Press ENTER to start."],
+        typeSpeed: -20,
+        backDelay:1000,
+        backSpeed: -50
+      });
+        window.addEventListener("keydown", function(event) {
+          event.preventDefault();
+          if (enterKeyOn){
+	          if (event.keyCode == 13) {
+	             currentLevel ++;
+	             levelCheck();
+	             enterKeyOn = false;
+	          }
+      	   }
+      });
 }
-//render function
-function render(){
-	//clear stage from prev turn
-	if(stage.hasChildNodes()){
-		for (var i = 0; i < ROWS * COLUMNS ; i++) {
-			stage.removeChild(stage.firstChild);
-		}
-	}
-	//loop through map
-	for (var row = 0; row < ROWS; row++) {
-		for (var column = 0; column < COLUMNS; column++){
-			var cell = document.createElement("div");
-			cell.setAttribute("class", "cell");
-			stage.appendChild(cell);
-			var sprite = document.createElement("img");
-			sprite.setAttribute("class", "sprite");
-
-				switch(map[row][column])
-				{
-					case FLOOR:
-						cell.style.background = "url(./images/floor.png)no-repeat center";						
-						break;
-
-					case WALL:
-						cell.style.background = "url(./images/wall.png)no-repeat center";
-						break;
-
-					case LOCK:
-						cell.style.background = "url(./images/floor.png)no-repeat center";
-						if(lockedBlockOne = true){
-						cell.appendChild(sprite);
-						sprite.src = "./images/lock.png";
-					}
-						break;
-
-					case KEY:
-						cell.style.background = "url(./images/floor.png)no-repeat center";
-						if(keyFound == false){
-						cell.appendChild(sprite);
-						sprite.src = "./images/key.png";
-					}
-						break;
-
-					case EXIT:
-						cell.style.background = "url(./images/stairs-down.png)no-repeat center";
-						break;
-				}
-				switch(gameObjects[row][column])
-				{
-					case PLAYER:
-						cell.appendChild(sprite);
-						sprite.src = "./images/char.png";
-						sprite.style.zIndex = "100";
-						break;
-				}					
-			cell.style.top = row * SIZE + "px";
-			cell.style.left = column * SIZE + "px";
-		}
-	}
-	output.innerHTML = gameMessage;
-}
-//game functions
-function getKey(){
-		var keySound = new Audio('./music/1_coins.ogg');
-		keySound.play();
-		output.style.color = "green";
-		gameMessage = "You picked up a key";
-		keyFound = true;
-		map[3][9] = 0;	
+//next level function is an interim state between levels, after a level is finished, this will display a message and tell the user to hit enter. 
+//on enter it will add one to the current level to advance stages. 
+	function nextLevel(){
+			if (enterKeyOn == true) {
+	      $("#output").typed({
+	        strings: ["You finished this level. Press ENTER to continue."],
+	        typeSpeed: -1,
+	        backDelay:500,
+	        backSpeed: -50
+	      });
+	      if (event.keyCode == 13) {
+	         currentLevel++;
+	         levelCheck();
+	         enterKeyOn = false;
+	      }
+      }
 }
 
-function unlock(){
-	var unlockSound = new Audio('./music/chest creak.wav');
-	unlockSound.play();
-	output.style.color = "green";
-	gameMessage = "You Unlocked The Door!";
-	lockedBlockOne = false;
-	map[2][1] = 0;
-}
-function endGame(){
-	if(map[playerRow][playerColumn] === EXIT){
-		output.style.color = "green";
-		gameMessage = "You found the exit! =]";
-		document.getElementById("bgMusic").src='./music/winner.ogg';
-		gameOver = true;
-	}
-	if(timerUp == true && gameOver == false){
-		output.style.color = "red";
-		gameMessage = "TIMES UP!";
-		render();
-		document.getElementById("bgMusic").src='./music/gameover.ogg';
-		gameOver = true;
-	}
-	window.removeEventListener("keydown", keydownHandler, false);
-}
-	render();
-
+//Describe the game and press START (in stage field)
+//When START -> play levelOne
+//when levelOne -> finished
