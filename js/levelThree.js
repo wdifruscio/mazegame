@@ -6,7 +6,7 @@ countdown(); // call the timer
 var count;
 	//timer
 	function countdown(){
-		var count=20;
+		var count=22;
 		if (counting == true){
 			var counter=setInterval(timer, 1000); //1000 will  run it every 1 second
 			function timer()

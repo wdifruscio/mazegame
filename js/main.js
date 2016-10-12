@@ -5,6 +5,7 @@ gameLost = false;
 gameWon = false;
 //this is to trigger if the enter key can be pressed or not(could exploit levels before)
 enterKeyOn = true;
+var MUSICKEY = 77;
 
 
 $(document).ready(function(){
@@ -85,16 +86,26 @@ function levelCheck(){
 }
 //start game is level 0. 
 function startGame(){
-      $("#output").typed({
-        strings: ["Use the arrow keys to try and get to the end of the maze. Watch the time limit!", "Press ENTER to start."],
-        typeSpeed: -20,
+	$('.text-start').show();
+      $("#text").typed({
+        strings: ["Use the arrow keys to try and get to the end of the maze. Watch the time limit!", "Click on a difficulty to start."],
+        typeSpeed: -30,
         backDelay:1000,
         backSpeed: -50
       });
+	  $("#difficulty-1").click(function(){
+		  count = 20;		  
+	  });
+
+	 $("#difficulty-2").click(function(){
+		 count = 12;
+
+	  });
         window.addEventListener("keydown", function(event) {
           event.preventDefault();
           if (enterKeyOn){
 	          if (event.keyCode == 13) {
+				// $('.text-start').hide();
 	             currentLevel ++;
 	             levelCheck();
 	             enterKeyOn = false;

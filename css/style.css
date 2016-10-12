@@ -29,6 +29,20 @@ font-size:2rem;
 text-align:center;*/
 }
 
+.start-text{
+	color:white;
+	font-size:2rem;
+	margin-top:100px;
+	padding:50px;
+	text-align:center;
+}
+.start-text button{
+	margin-top:15px;
+	background:transparent;
+	border:2px solid gray;
+	color:white;
+}
+
 .cell {
 display: block;
 position: absolute;
@@ -58,4 +72,7 @@ color:white;
 	color:red;
 	top:15px;
 	font-size:2rem;
+}
+span.typed-cursor{
+	display:none;
 }
