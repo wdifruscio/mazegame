@@ -3,10 +3,14 @@ function levelThree(){
 	//this boolean determines if the counter should run, is set false at the end of levels.
 counting = true;
 countdown(); // call the timer
-var count;
+if (hardmode){
+	count=15;
+}
+else{
+	count=20;
+}
 	//timer
 	function countdown(){
-		var count=22;
 		if (counting == true){
 			var counter=setInterval(timer, 1000); //1000 will  run it every 1 second
 			function timer()

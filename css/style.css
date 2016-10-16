@@ -10,13 +10,17 @@ body{
 	font-family: "Iceland", serif;
 }
 .container{
-	width:544px;
+	width:548px;
 	margin:0 auto;
 	position:relative;
+	border:2px solid darkgray;
 }
 .title h1{
 	text-align: center;
 	color:white;
+	text-shadow:2px 2px 0 gray;
+	font-size:30px;
+	text-transform:uppercase;
 }
 .stage {
 margin:0 auto;
@@ -24,23 +28,31 @@ position: relative;
 width: 544px;
 height: 448px;
 background: #000;
-/*color:white;
+color:white;
 font-size:2rem;
-text-align:center;*/
+text-align:center;
 }
 
 .start-text{
 	color:white;
 	font-size:2rem;
-	margin-top:100px;
-	padding:50px;
+	padding:25% 0;
 	text-align:center;
 }
-.start-text button{
-	margin-top:15px;
+button{
 	background:transparent;
 	border:2px solid gray;
 	color:white;
+	box-shadow:2px 2px 0 white;
+}
+.active{
+	background:white;
+	color:black;
+	border:2px solid white;
+	box-shadow:2px 2px 0 gray;
+}
+.active:focus{
+	outline:none;
 }
 
 .cell {

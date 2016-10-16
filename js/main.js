@@ -5,7 +5,7 @@ gameLost = false;
 gameWon = false;
 //this is to trigger if the enter key can be pressed or not(could exploit levels before)
 enterKeyOn = true;
-var MUSICKEY = 77;
+hardmode = false;
 
 
 $(document).ready(function(){
@@ -86,26 +86,17 @@ function levelCheck(){
 }
 //start game is level 0. 
 function startGame(){
-	$('.text-start').show();
-      $("#text").typed({
-        strings: ["Use the arrow keys to try and get to the end of the maze. Watch the time limit!", "Click on a difficulty to start."],
-        typeSpeed: -30,
+      $("#start-text").typed({
+        strings: ["Please Select Difficulty"],
+        typeSpeed: -20,
         backDelay:1000,
         backSpeed: -50
       });
-	  $("#difficulty-1").click(function(){
-		  count = 20;		  
-	  });
-
-	 $("#difficulty-2").click(function(){
-		 count = 12;
-
-	  });
         window.addEventListener("keydown", function(event) {
           event.preventDefault();
           if (enterKeyOn){
 	          if (event.keyCode == 13) {
-				// $('.text-start').hide();
+				 $("#stage").empty();
 	             currentLevel ++;
 	             levelCheck();
 	             enterKeyOn = false;
@@ -133,4 +124,19 @@ function startGame(){
 
 //Describe the game and press START (in stage field)
 //When START -> play levelOne
-//when levelOne -> finished
+
+//click handler for difficulty.
+$('#easy').on('click',function(){
+	console.log('easy');
+	$('button').removeClass('active');
+	$(this).addClass('active');
+	hardmode = false;	
+});
+$('#hard').on('click',function(){
+	console.log('hard');
+	$('button').removeClass('active');
+	$(this).addClass('active');
+	hardmode = true;	
+});
+
+//timing fcnt
