@@ -7,8 +7,8 @@ gameWon = false;
 enterKeyOn = true;
 hardmode = false;
 
-
 $(document).ready(function(){
+	$('#easy').addClass('active');
 	levelCheck();
 });
 //start game with level check function
@@ -86,22 +86,52 @@ function levelCheck(){
 }
 //start game is level 0. 
 function startGame(){
-      $("#start-text").typed({
+	var ENTER = 13;
+	var LEFT = 37;
+	var RIGHT = 39;
+	var mode = 0;
+      $(".start-text").typed({
         strings: ["Please Select Difficulty"],
         typeSpeed: -20,
         backDelay:1000,
         backSpeed: -50
       });
         window.addEventListener("keydown", function(event) {
-          event.preventDefault();
+        //   event.preventDefault();
           if (enterKeyOn){
-	          if (event.keyCode == 13) {
+			  switch(event.keyCode){
+				  
+				 case ENTER:
 				 $("#stage").empty();
 	             currentLevel ++;
 	             levelCheck();
 	             enterKeyOn = false;
-	          }
-      	   }
+				 break;
+
+				 case LEFT:
+				 if(mode === 1){
+					 mode--;
+				 }
+				 break;
+
+				 case RIGHT:
+				 if(mode === 0){
+					 mode++;
+				 }
+				 break;
+				 		 				  
+			  }
+			  if (mode === 0){
+				  	$('button').removeClass('active');
+					$('#easy').addClass('active');
+					hardmode = false;
+			  }
+			  if (mode === 1){
+				  	$('button').removeClass('active');
+					$('#hard').addClass('active');
+					hardmode = true;
+			  }
+		  }
       });
 }
 //next level function is an interim state between levels, after a level is finished, this will display a message and tell the user to hit enter. 
@@ -126,17 +156,13 @@ function startGame(){
 //When START -> play levelOne
 
 //click handler for difficulty.
-$('#easy').on('click',function(){
-	console.log('easy');
-	$('button').removeClass('active');
-	$(this).addClass('active');
-	hardmode = false;	
-});
-$('#hard').on('click',function(){
-	console.log('hard');
-	$('button').removeClass('active');
-	$(this).addClass('active');
-	hardmode = true;	
-});
-
-//timing fcnt
+// $('#easy').on('click',function(){
+// 	if(mode === 1){
+// 		mode--;
+// 	}	
+// });
+// $('#hard').on('click',function(){
+// if(mode === 0){
+// 	mode++;
+// }
+// });
