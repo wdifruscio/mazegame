@@ -90,3 +90,34 @@ color:white;
 span.typed-cursor{
 	display:none;
 }
+form input:first-child{
+	border:none;
+}
+form input{
+	width:75%;
+	margin:5px auto;
+	background:transparent;
+	color:white;	
+}
+.gameScore{
+	visibility: hidden;
+	height:0;
+}
+.nomargin{
+	margin:0;
+	margin-top:10px;
+	padding:0;
+	color:grey;
+}
+ol{
+	width:80%;
+	margin:0 auto;
+}
+.loading{
+	margin-top:100px;
+}
+.loading:before{
+
+	content: "LOADING....";
+	color:white;
+}

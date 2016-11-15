@@ -4,7 +4,7 @@ counting = true;
 countdown(); // call the timer
 	//timer
 if (hardmode){
-	count=15;
+	count=2;
 }
 else{
 	count=20;
@@ -362,6 +362,8 @@ else{
 			gameOver = true;
 			gameLost = true;
 			counting= false;
+			$("#stage").empty();
+			enterScore();
 		}
 	}
 	render();

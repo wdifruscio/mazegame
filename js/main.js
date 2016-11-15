@@ -10,6 +10,18 @@ hardmode = false;
 $(document).ready(function(){
 	$('#easy').addClass('active');
 	levelCheck();
+$('#stage').on('submit',$('form'),function(e){
+	 e.preventDefault();
+	 $.ajax({
+		url:'https://sheetsu.com/apis/v1.0/1b75822d09d1/',
+		type:'post',
+		data:$('form').serialize(),
+		success:function(){
+			$('#stage').append('<div class="loading">');
+			displayScores();
+		}
+    });
+});
 });
 //start game with level check function
 
@@ -63,7 +75,7 @@ function levelCheck(){
 	//if game is finished, display this output
 	else{
 		//determine if game was lost or won. Either way, game is finished so remove the event handler. 
-		window.removeEventListener("keydown", keydownHandler, false);
+		// window.removeEventListener("keydown", keydownHandler, false);
 		if (gameLost) {
 			$("#output").css('color','red');
 			$("#output").typed({
@@ -71,6 +83,8 @@ function levelCheck(){
 			  typeSpeed: 10,
 			  backDelay:500,
 			  backSpeed: -50
+			},function(){
+				enterScore();
 			});
 		}
 		if(gameWon){
@@ -151,18 +165,67 @@ function startGame(){
 	      }
       }
 }
+function enterScore() {
+	$('#time').fadeOut();
+	$('#stage').append('<div class="loading">');
+	var form = $('<form enctype="application/json">');
+	var nameInput = $('<input name="Name" value="" placeholder="Enter Your Name" maxlength="15">');
+	var scoreDisplay = $("<p class='nomargin'>").text(`You reached level: ${currentLevel}`);
+	var scoreInput = $(`<input class="gameScore" name="Score" placeholder="Your Current Level">`).val(currentLevel);
+	var formSubmit = $('<button type="submit">SUBMIT</button>');
+	$(form).append(scoreDisplay,scoreInput,nameInput,formSubmit);
+	console.log('working');
+	var scoreList = $('ul');
+	var individualScore = $('li');
+		$.ajax({
+		url: "https://sheetsu.com/apis/v1.0/1b75822d09d1",
+		method: "GET",
+		dataType: "JSON",
+	}).then((res)=>{
+		$(".loading").hide();
+		var title = $('<h2>').text("High Scores");
+		var scoreTable = $('<ol>');
+		console.log(res);
+		var sorted = res.sort(function(a,b){
+			return b.Score - a.Score;
+		});
+		var count = 0;
+		sorted.forEach( (i)=>{
+			if (count < 5){
+			var score = $('<li>').text(i['Name']+" - "+"Level: " + i['Score']);
+			console.log(i);
+			$(scoreTable).append(score);
+			count++;
+			}						
+		});
+		$("#stage").append(title,scoreTable,form);	
+	});
+}
 
-//Describe the game and press START (in stage field)
-//When START -> play levelOne
+function displayScores(){
+	$('#stage').empty();
+	$.ajax({
+		url: "https://sheetsu.com/apis/v1.0/1b75822d09d1",
+		method: "GET",
+		dataType: "JSON",
+	}).then((res)=>{
+		$('.loading').hide();
+		var title = $('<h2>').text("High Scores");
+		var scoreTable = $('<ol>');
+		console.log(res);
+		var sorted = res.sort(function(a,b){
+			return b.Score - a.Score;
+		});
+		var count = 0;
+		sorted.forEach( (i)=>{
+			if (count < 5){
+			var score = $('<li>').text(i['Name']+" - "+"Level: " + i['Score']);
+			console.log(i);
+			$(scoreTable).append(score);
+			count++;
+			}						
+		});
+		$("#stage").append(title,scoreTable);	
+	});
+}
 
-//click handler for difficulty.
-// $('#easy').on('click',function(){
-// 	if(mode === 1){
-// 		mode--;
-// 	}	
-// });
-// $('#hard').on('click',function(){
-// if(mode === 0){
-// 	mode++;
-// }
-// });

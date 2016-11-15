@@ -498,6 +498,8 @@ else{
 			gameOver = true;
 			gameLost = true;
 			counting= false;
+			$("#stage").empty();
+			enterScore();
 		}
 		window.removeEventListener("keydown", keydownHandler, false);
 	}

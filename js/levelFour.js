@@ -356,6 +356,8 @@ else{
 			render();
 			document.getElementById("bgMusic").src='./music/gameover.ogg';
 			gameOver = true;
+			$("#stage").empty();
+			enterScore();
 		}
 		window.removeEventListener("keydown", keydownHandler, false);
 	}

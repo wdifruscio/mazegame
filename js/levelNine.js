@@ -494,7 +494,9 @@ else{
 			gameOver = true;
 			counting= false;
 			enterKeyOn = true;
-			nextLevel();
+			currentLevel = 10;
+			$("#stage").empty();
+			enterScore();
 		}
 		if(timerUp == true && gameOver == false){
 			output.style.color = "red";
@@ -504,6 +506,8 @@ else{
 			gameOver = true;
 			gameLost = true;
 			counting= false;
+			$("#stage").empty();
+			enterScore();
 		}
 		window.removeEventListener("keydown", keydownHandler, false);
 	}
