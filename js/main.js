@@ -6,22 +6,28 @@ gameWon = false;
 //this is to trigger if the enter key can be pressed or not(could exploit levels before)
 enterKeyOn = true;
 hardmode = false;
+//arrays to hold highscore data
+scores=[];
+sorted=[];
 
 $(document).ready(function(){
 	$('#easy').addClass('active');
 	levelCheck();
-$('#stage').on('submit',$('form'),function(e){
-	 e.preventDefault();
-	 $.ajax({
-		url:'https://sheetsu.com/apis/v1.0/1b75822d09d1/',
-		type:'post',
-		data:$('form').serialize(),
-		success:function(){
-			$('#stage').append('<div class="loading">');
-			displayScores();
-		}
-    });
-});
+	$('#stage').on('submit',$('form'),function(e){
+		var playerName = $('#name').val();
+		var playerScore = $('#score').val();
+		var dataPost = {player:playerName, score:playerScore};
+		e.preventDefault();
+		$('#stage').empty();
+		$('#stage').append("<div class='loading'>");
+			$.ajax({
+				url:'https://dungeon-maze.firebaseio.com/.json',
+				type:'post',
+				data:JSON.stringify(dataPost),
+			}).then((res)=>{
+				displayScores();			
+		});
+	});
 });
 //start game with level check function
 
@@ -169,33 +175,34 @@ function enterScore() {
 	$('#time').fadeOut();
 	$('#stage').append('<div class="loading">');
 	var form = $('<form enctype="application/json">');
-	var nameInput = $('<input name="Name" value="" placeholder="Enter Your Name" maxlength="15">');
+	var nameInput = $('<input name="Name" id="name" value="" placeholder="Enter Your Name" maxlength="15">');
 	var scoreDisplay = $("<p class='nomargin'>").text(`You reached level: ${currentLevel}`);
-	var scoreInput = $(`<input class="gameScore" name="Score" placeholder="Your Current Level">`).val(currentLevel);
+	var scoreInput = $(`<input class="gameScore" id="score" name="Score" placeholder="Your Current Level">`).val(currentLevel);
 	var formSubmit = $('<button type="submit">SUBMIT</button>');
 	$(form).append(scoreDisplay,scoreInput,nameInput,formSubmit);
-	console.log('working');
 	var scoreList = $('ul');
 	var individualScore = $('li');
 		$.ajax({
-		url: "https://sheetsu.com/apis/v1.0/1b75822d09d1",
+		url: "https://dungeon-maze.firebaseio.com/.json",
 		method: "GET",
 		dataType: "JSON",
 	}).then((res)=>{
 		$(".loading").hide();
 		var title = $('<h2>').text("High Scores");
 		var scoreTable = $('<ol>');
-		console.log(res);
-		var sorted = res.sort(function(a,b){
-			return b.Score - a.Score;
+		Object.keys(res).forEach((key) => {
+			var playerInfo = res[key];
+			scores.push(playerInfo);        
+		});
+		sorted = scores.sort((a,b)=>{
+			return b.score - a.score;
 		});
 		var count = 0;
 		sorted.forEach( (i)=>{
 			if (count < 5){
-			var score = $('<li>').text(i['Name']+" - "+"Level: " + i['Score']);
-			console.log(i);
-			$(scoreTable).append(score);
-			count++;
+				var score = $('<li>').text(i['player']+" - "+"Level: " + i['score']);
+				$(scoreTable).append(score);
+				count++;
 			}						
 		});
 		$("#stage").append(title,scoreTable,form);	
@@ -203,29 +210,34 @@ function enterScore() {
 }
 
 function displayScores(){
+	scores = [];
+	sorted=[];
+	var form = $('<form enctype="application/json">');
 	$('#stage').empty();
 	$.ajax({
-		url: "https://sheetsu.com/apis/v1.0/1b75822d09d1",
+		url: "https://dungeon-maze.firebaseio.com/.json",
 		method: "GET",
 		dataType: "JSON",
 	}).then((res)=>{
-		$('.loading').hide();
+		$(".loading").hide();
 		var title = $('<h2>').text("High Scores");
 		var scoreTable = $('<ol>');
-		console.log(res);
-		var sorted = res.sort(function(a,b){
-			return b.Score - a.Score;
+		Object.keys(res).forEach((key) => {
+			var playerInfo = res[key];
+			scores.push(playerInfo);        
+		});
+		sorted = scores.sort((a,b)=>{
+			return b.score - a.score;
 		});
 		var count = 0;
 		sorted.forEach( (i)=>{
 			if (count < 5){
-			var score = $('<li>').text(i['Name']+" - "+"Level: " + i['Score']);
-			console.log(i);
-			$(scoreTable).append(score);
-			count++;
+				var score = $('<li>').text(i['player']+" - "+"Level: " + i['score']);
+				$(scoreTable).append(score);
+				count++;
 			}						
 		});
-		$("#stage").append(title,scoreTable);	
+		$("#stage").append(title,scoreTable,form);	
 	});
 }
 

@@ -1,14 +1,14 @@
 function levelTwo(){
 		document.getElementById("bgMusic").src='./music/Adventure.mp3';
 	//this boolean determines if the counter should run, is set false at the end of levels.
-counting = true;
-countdown(); // call the timer
-if (hardmode){
-	count=15;
-}
-else{
-	count=20;
-}
+		counting = true;
+		countdown(); // call the timer
+		if (hardmode){
+			count=15;
+		}
+		else{
+			count=20;
+		}
 	//timer
 	function countdown(){
 		if (counting == true){

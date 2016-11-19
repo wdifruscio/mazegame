@@ -4,7 +4,7 @@ counting = true;
 countdown(); // call the timer
 	//timer
 if (hardmode){
-	count=2;
+	count=15;
 }
 else{
 	count=20;
